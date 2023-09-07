@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\MyResourceController;
+use App\Http\Controllers\Api\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,24 +16,41 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 // ミドルウェアで認証をかけてログインしてないとアクセスできないAPIを定義できる
 Route::middleware(['auth:sanctum'])
     ->name('api.')
     ->group(function () {
-        Route::get('/me', function () {
-            return response()->json([
-                "id" => 1,
-                "name" => "ニックネーム",
-                "email" => "user@example.com",
-                "icon_url" => "http://localhost/users/image/1",
-            ]);
+
+        // ログインしているユーザーを取得
+        Route::get('/user', function (Request $request) {
+            return $request->user();
         });
 
-        Route::post('/my/icons', function () {
-            return 'http://localhost/users/image/1';
-        });
+        Route::get('/me', [MyResourceController::class, 'me'])->name('me');
+
+        Route::prefix('/my')
+            ->name('my.')
+            ->group(function () {
+                Route::post('/icons', [MyResourceController::class, 'updateIcons'])
+                    ->name('icons');
+
+                Route::get('/tags', [MyResourceController::class, 'tags'])
+                    ->name('tags');
+            });
+
+        Route::prefix('tags')
+            ->name('tags.')
+            ->group(function () {
+
+                Route::get('', [TagController::class, 'index'])->name('index');
+                Route::post('', [TagController::class, 'store'])->name('store');
+
+                Route::prefix('/{id}')->group(function () {
+                    Route::post('/join', [TagController::class, 'join'])
+                        ->name('join');
+                    Route::post('/leave', [TagController::class, 'leave'])
+                        ->name('leave');
+                });
+            });
     });

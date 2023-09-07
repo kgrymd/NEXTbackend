@@ -21,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'icon_url',
+        'icon_path',
         'introduction',
         'age',
         'gender',
@@ -53,5 +53,10 @@ class User extends Authenticatable
     {
         // return $this->belongsTo(Prefecture::class, 'prefecture_id', 'id'); // Laravelの規約に沿った名前付けをしているで余計な引数の指定をせずに済む。
         return $this->belongsTo(Prefecture::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }

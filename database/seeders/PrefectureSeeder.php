@@ -56,8 +56,11 @@ class PrefectureSeeder extends Seeder
                 'latitude' => 36.3912,
                 'longitude' => 139.0608,
             ],
-
-
+            [
+                'name' => '福岡県',
+                'latitude' => 33.6064,
+                'longitude' => 130.4181,
+            ],
 
             // ... 他の都道府県データ
         ]);
