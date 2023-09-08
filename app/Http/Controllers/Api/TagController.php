@@ -14,11 +14,11 @@ class TagController extends Controller
 
     public function index(Request $request)
     {
-        $channels = Tag::with('users')
+        $tags = Tag::with('users')
             ->orderBy('created_at', 'asc')
             ->paginate(20);
 
-        return response()->json($channels);
+        return response()->json($tags);
     }
 
     public function store(Request $request)

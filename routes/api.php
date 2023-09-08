@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\MyResourceController;
+use App\Http\Controllers\Api\PrefectureController;
 use App\Http\Controllers\Api\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +17,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+Route::prefix('prefectures')
+    ->name('prefectures.')
+    ->group(
+        function () {
+            Route::get('', [PrefectureController::class, 'index'])->name('index');
+        }
+    );
 // ミドルウェアで認証をかけてログインしてないとアクセスできないAPIを定義できる
 Route::middleware(['auth:sanctum'])
     ->name('api.')
@@ -34,6 +41,11 @@ Route::middleware(['auth:sanctum'])
             ->group(function () {
                 Route::post('/icons', [MyResourceController::class, 'updateIcons'])
                     ->name('icons');
+
+                Route::put('/{id}/tags', [MyResourceController::class, 'updateTags']);
+
+
+                Route::patch('/data', [MyResourceController::class, 'updateData'])->name('updateData');
 
                 Route::get('/tags', [MyResourceController::class, 'tags'])
                     ->name('tags');

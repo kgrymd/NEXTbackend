@@ -20,7 +20,8 @@ class LocalSeeder extends Seeder
             "name" =>  "バカチンガー",
             "password" =>  "password",
             "email" =>  "hoge@hogemail.com",
-            "icon_path" =>  "users/images/51TAPoQmD1A7AWxhhHpK5jURqfI5nFyQsm3SMEUL.jpg",
+            // "icon_path" =>  "users/images/51TAPoQmD1A7AWxhhHpK5jURqfI5nFyQsm3SMEUL.jpg",
+            "icon_path" =>  "https://yt3.googleusercontent.com/QyEXdCubnXVVAaSxIP9BY3wFdQc7GO_GY6RbZrtiJ0Rla31gt01W1pgBxAflgBOixsIqjBZQ=s900-c-k-c0x00ffffff-no-rj",
             "introduction" =>  "バカチンガーは福岡の未来をちょっとだけ明るくする庶民派ヒーロー。\n地球にやさしく、人にやさしく、なにより福岡をよくするためにFBS福岡放送から 生まれ出たキャラクターだ。",
         ]);
 
