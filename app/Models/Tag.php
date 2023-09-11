@@ -22,4 +22,10 @@ class Tag extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function recruitments()
+    {
+        // return $this->belongsToMany(Recruitment::class, 'recruitment_tag');
+        return $this->belongsToMany(Recruitment::class);
+    }
 }
