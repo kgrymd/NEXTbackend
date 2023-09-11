@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\MyResourceController;
 use App\Http\Controllers\Api\PrefectureController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\RecruitmentController;
+use App\Http\Controllers\Api\RecruitmentTagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -65,4 +67,14 @@ Route::middleware(['auth:sanctum'])
                         ->name('leave');
                 });
             });
+
+        Route::prefix('recruitments')
+            ->name('recruitments.')
+            ->group(
+                function () {
+                    Route::get('', [RecruitmentController::class, 'index'])->name('index');
+
+                    Route::post('/{recruitmentId}/tags', [RecruitmentTagController::class, 'update']);
+                }
+            );
     });

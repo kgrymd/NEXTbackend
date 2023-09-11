@@ -59,4 +59,34 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Tag::class);
     }
+
+
+    // Userが作成した募集
+    public function createdRecruitments()
+    {
+        return $this->hasMany(Recruitment::class, 'user_id');
+    }
+
+    // Userが申請した募集（承認前含む）
+    public function appliedRecruitments()
+    {
+        return $this->belongsToMany(Recruitment::class, 'participants');
+    }
+
+    // 承認された募集（正式に参加）
+    public function approvedRecruitments()
+    {
+        return $this->belongsToMany(Recruitment::class, 'participants')->wherePivot('is_approved', true);
+    }
+
+    // Userの参加詳細（Participantテーブルに直接アクセスする場合）
+    public function participations()
+    {
+        return $this->hasMany(Participant::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

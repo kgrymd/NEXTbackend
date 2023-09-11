@@ -41,34 +41,34 @@ class TagController extends Controller
 
     public function join(Request $request, string $id)
     {
-        $channel = Tag::where('id', $id)->first();
-        if (!$channel) {
+        $tag = Tag::where('id', $id)->first();
+        if (!$tag) {
             abort(404, 'Not Found.');
         }
-        if ($channel->users()->find(Auth::id())) {
+        if ($tag->users()->find(Auth::id())) {
             throw ValidationException::withMessages([
                 'id' => 'Already Joined.',
             ]);
         }
 
-        $channel->users()->attach(Auth::id());
+        $tag->users()->attach(Auth::id());
 
         return response()->noContent();
     }
 
     public function leave(Request $request, string $id)
     {
-        $channel = Tag::where('id', $id)->first();
-        if (!$channel) {
+        $tag = Tag::where('id', $id)->first();
+        if (!$tag) {
             abort(404, 'Not Found.');
         }
-        if (!$channel->users()->find(Auth::id())) {
+        if (!$tag->users()->find(Auth::id())) {
             throw ValidationException::withMessages([
                 'id' => 'Already Left.',
             ]);
         }
 
-        $channel->users()->detach(Auth::id());
+        $tag->users()->detach(Auth::id());
 
         return response()->noContent();
     }

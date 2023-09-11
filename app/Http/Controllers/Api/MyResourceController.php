@@ -135,17 +135,6 @@ class MyResourceController extends Controller
         }
     }
 
-    // public function updateTags(Request $request, User $user)
-    // {
-    //     // バリデーション、認証等をあとて追加
-
-    //     $tagIds = $request->input('tags');
-
-    //     // tag_userテーブルを更新
-    //     $user->tags()->sync($tagIds);
-
-    //     return response()->json(['message' => 'Successfully updated tags']);
-    // }
     public function updateTags(Request $request, $userId)
     {
         $user = User::find($userId);
