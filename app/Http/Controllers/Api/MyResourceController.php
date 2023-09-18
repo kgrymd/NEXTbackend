@@ -31,47 +31,6 @@ class MyResourceController extends Controller
         return new UserResource($me);
     }
 
-    public function tags(Request $request)
-    {
-        $tags = Tag::with('users')
-            ->whereHas('users', function (Builder $query) {
-                $query->where('user_id', Auth::id());
-            })
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        return response()->json($tags);
-    }
-
-    // ↓多分もういらないので最終的に消す
-    public function updateIcons(Request $request)
-    {
-        // 画像がアップロードされているか確認
-        if (!$request->hasFile('image')) {
-            return response()->json(['error' => 'No image uploaded'], 400);
-        }
-        DB::transaction(function () use ($request) {
-
-            $savedPath = $request->image->store('users/images');
-
-            try {
-                Auth::user()
-                    ->fill([
-                        'icon_path' => $savedPath,
-                    ])
-                    ->save();
-            } catch (\Exception $e) {
-                // DBでのエラーが起きた場合は、保存したファイルを削除
-                Storage::delete($savedPath);
-                throw $e;
-            }
-        });
-
-        return response()->json(
-            route('web.users.image', ['userId' => Auth::id()])
-        );
-    }
-
 
     public function updateData(Request $request)
     {
@@ -120,6 +79,11 @@ class MyResourceController extends Controller
                 $data['prefecture_id'] = $request->input('prefecture_id');
             }
 
+            Auth::user()->tags()->sync($request->tags);
+
+
+
+
             // 更新処理
             Auth::user()->update($data);
 
@@ -135,17 +99,29 @@ class MyResourceController extends Controller
         }
     }
 
-    public function updateTags(Request $request, $userId)
+    public function myParticipations(Request $request)
     {
-        $user = User::find($userId);
+        // 認証済みのユーザーを取得
+        $user = Auth::user();
 
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
+        // ユーザーが参加している募集を取得
+        $participatedRecruitments = $user->participations()->with('recruitment:title,id,user_id')->orderBy('created_at', 'desc')->get();
 
-        $tagIds = $request->input('tags');
-        $user->tags()->sync($tagIds);
+        // return response()->json($participatedRecruitments);
+        $result = $participatedRecruitments->map(
+            function ($participation) {
 
-        return response()->json(['message' => 'Tags updated successfully']);
+                return [
+                    'id' => $participation->id,
+                    // 'user_id' => $participation->user_id,
+                    'recruitment_id' => $participation->recruitment_id,
+                    'creator_id' => $participation->recruitment->user_id,
+                    'recruitment_title' => $participation->recruitment->title,
+                    'is_approved' => $participation->is_approved,
+                    'joined_at' => $participation->joined_at,
+                ];
+            }
+        );
+        return response()->json($result);
     }
 }

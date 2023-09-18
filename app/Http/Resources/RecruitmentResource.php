@@ -16,7 +16,7 @@ class RecruitmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => new UserResource($this->creator), //募集を作成したUser
+            'user' => new UserResource($this->creator), //募集を作成したUser  Todo:: userじゃなくてcreatorの方が良くね？あとで集中力のある時にフロントも合わせて変える
             'title' => $this->title,
             'description' => $this->description,
             'youtube_url' => $this->youtube_url,

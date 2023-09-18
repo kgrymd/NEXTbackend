@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\MyResourceController;
 use App\Http\Controllers\Api\PrefectureController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\RecruitmentController;
 use App\Http\Controllers\Api\RecruitmentTagController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +28,10 @@ Route::prefix('prefectures')
             Route::get('', [PrefectureController::class, 'index'])->name('index');
         }
     );
+
+Route::get('users/{id}', [UserController::class, 'show'])->name('show');
+
+
 // ミドルウェアで認証をかけてログインしてないとアクセスできないAPIを定義できる
 Route::middleware(['auth:sanctum'])
     ->name('api.')
@@ -51,6 +57,9 @@ Route::middleware(['auth:sanctum'])
 
                 Route::get('/tags', [MyResourceController::class, 'tags'])
                     ->name('tags');
+
+                Route::get('/participations', [MyResourceController::class, 'myParticipations'])
+                    ->name('participations');
             });
 
         Route::prefix('tags')
@@ -74,7 +83,21 @@ Route::middleware(['auth:sanctum'])
                 function () {
                     Route::get('', [RecruitmentController::class, 'index'])->name('index');
 
+                    Route::post('', [RecruitmentController::class, 'creation']);
                     Route::post('/{recruitmentId}/tags', [RecruitmentTagController::class, 'update']);
                 }
             );
+
+        Route::prefix('comments')
+            ->name('comments.')
+            ->group(function () {
+                Route::post('', [CommentController::class, 'store'])->name('store');
+            });
+
+
+        Route::prefix('participants')
+            ->name('participants.')
+            ->group(function () {
+                Route::post('', [RecruitmentController::class, 'join'])->name('join');
+            });
     });
