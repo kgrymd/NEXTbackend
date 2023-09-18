@@ -29,6 +29,14 @@ class RecruitmentController extends Controller
         return RecruitmentResource::collection($recruitments);
     }
 
+    public function show($id)
+    {
+        // RecruitmentモデルをIDで検索
+        $recruitment = Recruitment::with('tags')->findOrFail($id);
+
+        return new RecruitmentResource($recruitment);
+    }
+
     public function creation(Request $request)
     {
         DB::beginTransaction();
@@ -112,7 +120,6 @@ class RecruitmentController extends Controller
 
             // logger('Tags data: ', $request->tags);
 
-
             $recruitmentResponse->tags()->sync($request->tags);
 
             $participantData = [
@@ -140,7 +147,14 @@ class RecruitmentController extends Controller
 
     public function join(Request $request)
     {
-        $participant = Participant::create($request->all());
+        $participantData = [
+            'user_id' => $request->user_id,
+            'recruitment_id' => $request->recruitment_id,
+            'is_approved' => $request->is_approved,
+            'joined_at' => now()
+        ];
+
+        $participant = Participant::create($participantData);
         return response()->json($participant, 201);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\ChatGroup;
 use App\Models\Comment;
+use App\Models\Message;
 use App\Models\Participant;
 use App\Models\Prefecture;
 use App\Models\Recruitment;
@@ -22,7 +24,7 @@ class LocalSeeder extends Seeder
     public function run(): void
     {
 
-        User::create([
+        $testUser = User::create([
             "name" =>  "バカチンガー",
             "password" =>  "password",
             "email" =>  "hoge@hogemail.com",
@@ -147,5 +149,34 @@ class LocalSeeder extends Seeder
                     'recruitment_id' => $recruitment->id,
                 ]);
         }
+
+
+        ChatGroup::factory()
+            ->hasAttached($users->random(3)->push($testUser))
+            ->create([
+                'name' => 'Quiet Room',
+            ]);
+
+        // ChatGroup::factory()
+        //     ->hasAttached($users->push($testUser))
+        //     ->has(
+        //         Message::factory()
+        //             ->count(100)
+        //             ->recycle($users)
+        //     )
+        //     ->create([
+        //         'name' => 'Noisy Room',
+        //     ]);
+
+        ChatGroup::factory()
+            ->hasAttached($randomUsers = $users->random(5)->push($testUser))
+            ->has(
+                Message::factory()
+                    ->count(10)
+                    ->recycle($randomUsers)
+            )
+            ->create([
+                'name' => 'Normal Room',
+            ]);
     }
 }
