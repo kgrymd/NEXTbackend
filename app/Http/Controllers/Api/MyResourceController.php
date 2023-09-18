@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\ChatGroup;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -123,5 +124,17 @@ class MyResourceController extends Controller
             }
         );
         return response()->json($result);
+    }
+
+    public function chat_groups(Request $request)
+    {
+        $chat_groups = ChatGroup::with('users')
+            ->whereHas('users', function (Builder $query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return response()->json($chat_groups);
     }
 }

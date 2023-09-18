@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\ChatGroupController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\MyResourceController;
 use App\Http\Controllers\Api\PrefectureController;
 use App\Http\Controllers\Api\TagController;
@@ -60,6 +62,9 @@ Route::middleware(['auth:sanctum'])
 
                 Route::get('/participations', [MyResourceController::class, 'myParticipations'])
                     ->name('participations');
+
+                Route::get('/chat-groups', [MyResourceController::class, 'chat_groups'])
+                    ->name('chat_groups');
             });
 
         Route::prefix('tags')
@@ -85,6 +90,8 @@ Route::middleware(['auth:sanctum'])
 
                     Route::post('', [RecruitmentController::class, 'creation']);
                     Route::post('/{recruitmentId}/tags', [RecruitmentTagController::class, 'update']);
+
+                    Route::get('/{id}', [RecruitmentController::class, 'show'])->name('show');
                 }
             );
 
@@ -99,5 +106,38 @@ Route::middleware(['auth:sanctum'])
             ->name('participants.')
             ->group(function () {
                 Route::post('', [RecruitmentController::class, 'join'])->name('join');
+            });
+
+
+        Route::prefix('/chat-groups')
+            ->name('chat-groups.')
+            ->group(function () {
+                Route::get('', [ChatGroupController::class, 'index'])->name('index');
+
+                Route::post('', [ChatGroupController::class, 'store'])->name('store');
+
+                Route::prefix('/{uuid}')->group(function () {
+                    Route::prefix('/messages')
+                        ->name('messages.')
+                        ->group(function () {
+                            Route::get('', [MessageController::class, 'index'])
+                                ->name('index');
+
+                            Route::get('/polling', [MessageController::class, 'polling'])
+                                ->name('polling');
+
+                            Route::post('', [MessageController::class, 'store'])
+                                ->name('store');
+
+                            Route::delete('/{id}', [MessageController::class, 'destroy'])
+                                ->name('destroy');
+                        });
+
+                    Route::post('/join', [ChatGroupController::class, 'join'])
+                        ->name('join');
+
+                    Route::post('/leave', [ChatGroupController::class, 'leave'])
+                        ->name('leave');
+                });
             });
     });
