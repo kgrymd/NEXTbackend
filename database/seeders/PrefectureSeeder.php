@@ -61,6 +61,11 @@ class PrefectureSeeder extends Seeder
                 'latitude' => 33.6064,
                 'longitude' => 130.4181,
             ],
+            [
+                'name' => 'インド',
+                'latitude' => 28.6139,
+                'longitude' => 77.2090,
+            ],
 
             // ... 他の都道府県データ
         ]);

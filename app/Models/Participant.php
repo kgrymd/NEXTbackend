@@ -10,6 +10,14 @@ class Participant extends Model
     use HasFactory;
 
 
+
+    protected $fillable = [
+        'user_id',
+        'recruitment_id',
+        'is_approved',
+        'joined_at',
+    ];
+
     // 参加申請をしたUser
     public function user()
     {

@@ -18,6 +18,9 @@ return new class extends Migration
             $table->boolean('is_approved')->default(false);
             $table->dateTime('joined_at')->nullable();
             $table->timestamps();
+
+            // user_idとrecruitment_idの組み合わせをユニーク制約として追加
+            $table->unique(['user_id', 'recruitment_id']);
         });
     }
 

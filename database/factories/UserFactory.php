@@ -22,9 +22,9 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             // 'icon_path' => $this->faker->randomElement(['/image2.png', '/image3.png', '/image4.png']),
-            'icon_path' => $this->faker->randomElement(array_map(function ($num) {
-                return "/image{$num}.png";
-            }, range(1, 20))),
+            // 'icon_path' => $this->faker->randomElement(array_map(function ($num) {
+            //     return "/image{$num}.png";
+            // }, range(1, 20))),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ];

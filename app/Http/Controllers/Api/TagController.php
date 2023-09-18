@@ -14,9 +14,10 @@ class TagController extends Controller
 
     public function index(Request $request)
     {
+        // $tags = Tag::all();
         $tags = Tag::with('users')
             ->orderBy('created_at', 'asc')
-            ->paginate(20);
+            ->cursorPaginate(20);
 
         return response()->json($tags);
     }
@@ -33,8 +34,8 @@ class TagController extends Controller
         ]);
 
         // タグを作った人はそのままタグに参加している状態を作りたいので、
-        // tag_userテーブルの中間テーブルに紐付けデータを作成
-        $storedTag->users()->sync([Auth::id()]);
+        // tag_userテーブルの中間テーブルに紐付けデータを作成。募集のタグでも共用するので一旦コメントアウト　2023/09/13
+        // $storedTag->users()->sync([Auth::id()]);
 
         return response()->json($storedTag);
     }
