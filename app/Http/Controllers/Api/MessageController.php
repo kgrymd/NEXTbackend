@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MessageResource;
 use App\Models\ChatGroup;
 use App\Models\Message;
 use Carbon\Carbon;
@@ -17,14 +18,19 @@ class MessageController extends Controller
     public function index(Request $request, string $uuid)
     {
         /** @var \Illuminate\Pagination\CursorPaginator $messages */
-        $messages = Message::with(['user'])
+        $messages = Message::with(['user', 'chat_group']) //chat_groupを追加　09192037
             ->whereHas('chat_group', function (Builder $builder) use ($uuid) {
                 $builder->where('uuid', $uuid);
             })
-            ->orderBy('id', 'desc')
-            ->cursorPaginate(20);
+            // ->orderBy('id', 'desc')
+            ->orderBy('id', 'asc')->get();
+        // ->cursorPaginate(20);
+        // ->paginate(8);
 
-        return response()->json($messages);
+
+
+        // return response()->json($messages);
+        return MessageResource::collection($messages);
     }
 
     public function polling(Request $request, string $uuid)
@@ -38,14 +44,20 @@ class MessageController extends Controller
                 $builder->where('uuid', $uuid);
             })
             ->where('created_at', '>', $dateTimeString)
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'asc')
             ->get();
 
-        return response()->json($messages);
+        // return response()->json($messages);
+        return MessageResource::collection($messages);
     }
 
     public function store(Request $request, string $uuid)
     {
+
+        $request->validate([
+            'message_text' => 'required|max:1000',
+        ]);
+
         $message = DB::transaction(function () use ($request, $uuid) {
             $message = Message::create([
                 'chat_group_id' => ChatGroup::where('uuid', $uuid)->first()->id,
@@ -59,7 +71,8 @@ class MessageController extends Controller
             return $message;
         });
 
-        return response()->json($message);
+        // return response()->json($message);
+        return new MessageResource($message);
     }
 
     public function destroy(Request $request, string $uuid, string $id)
