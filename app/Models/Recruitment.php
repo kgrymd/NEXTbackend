@@ -71,4 +71,10 @@ class Recruitment extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'recruitment_user')
+            ->withTimestamps(); // タイムスタンプを同期する場合
+    }
 }
