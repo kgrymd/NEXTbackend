@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ChatGroupController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\FavoritesController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\MyResourceController;
 use App\Http\Controllers\Api\PrefectureController;
@@ -49,22 +50,25 @@ Route::middleware(['auth:sanctum'])
         Route::prefix('/my')
             ->name('my.')
             ->group(function () {
-                Route::post('/icons', [MyResourceController::class, 'updateIcons'])
-                    ->name('icons');
 
-                Route::put('/{id}/tags', [MyResourceController::class, 'updateTags']);
-
+                // Route::put('/{id}/tags', [MyResourceController::class, 'updateTags']);
 
                 Route::patch('/data', [MyResourceController::class, 'updateData'])->name('updateData');
 
-                Route::get('/tags', [MyResourceController::class, 'tags'])
-                    ->name('tags');
+                // Route::get('/tags', [MyResourceController::class, 'tags'])
+                //     ->name('tags');
 
                 Route::get('/participations', [MyResourceController::class, 'myParticipations'])
                     ->name('participations');
 
                 Route::get('/chat-groups', [MyResourceController::class, 'chat_groups'])
                     ->name('chat_groups');
+
+                Route::get('/likedRecruitments', [MyResourceController::class, 'likedRecruitments'])
+                    ->name('likedRecruitments');
+
+                Route::get('/createdRecruitments', [MyResourceController::class, 'createdRecruitments'])
+                    ->name('createdRecruitments');
             });
 
         Route::prefix('tags')
@@ -74,12 +78,12 @@ Route::middleware(['auth:sanctum'])
                 Route::get('', [TagController::class, 'index'])->name('index');
                 Route::post('', [TagController::class, 'store'])->name('store');
 
-                Route::prefix('/{id}')->group(function () {
-                    Route::post('/join', [TagController::class, 'join'])
-                        ->name('join');
-                    Route::post('/leave', [TagController::class, 'leave'])
-                        ->name('leave');
-                });
+                // Route::prefix('/{id}')->group(function () {
+                //     Route::post('/join', [TagController::class, 'join'])
+                //         ->name('join');
+                //     Route::post('/leave', [TagController::class, 'leave'])
+                //         ->name('leave');
+                // });
             });
 
         Route::prefix('recruitments')
@@ -92,6 +96,18 @@ Route::middleware(['auth:sanctum'])
                     Route::post('/{recruitmentId}/tags', [RecruitmentTagController::class, 'update']);
 
                     Route::get('/{id}', [RecruitmentController::class, 'show'])->name('show');
+                    Route::post('/{id}', [RecruitmentController::class, 'update'])->name('update');
+
+                    // Route::get('/suggestions', [RecruitmentController::class, 'suggestions'])->name('suggestions');
+
+                    Route::get('/suggestions/nearby', [RecruitmentController::class, 'nearbyRecruitments'])->name('nearbyRecruitments');
+
+                    Route::get('/suggestions/suggest', [RecruitmentController::class, 'suggestRecruitments'])->name('suggestRecruitments');
+
+                    Route::get('/search/keyword', [RecruitmentController::class, 'searchRecruitments'])->name('searchRecruitments');
+
+                    Route::post('/{recruitmentId}/favorite', [FavoritesController::class, 'addFavorite'])->name('favorite');
+                    Route::delete('/{recruitmentId}/unfavorite', [FavoritesController::class, 'removeFavorite'])->name('unfavorite');
                 }
             );
 
@@ -112,11 +128,14 @@ Route::middleware(['auth:sanctum'])
         Route::prefix('/chat-groups')
             ->name('chat-groups.')
             ->group(function () {
-                Route::get('', [ChatGroupController::class, 'index'])->name('index');
+                // Route::get('', [ChatGroupController::class, 'index'])->name('index');
 
                 Route::post('', [ChatGroupController::class, 'store'])->name('store');
 
                 Route::prefix('/{uuid}')->group(function () {
+
+                    Route::get('', [ChatGroupController::class, 'show'])->name('show');
+
                     Route::prefix('/messages')
                         ->name('messages.')
                         ->group(function () {
@@ -129,8 +148,8 @@ Route::middleware(['auth:sanctum'])
                             Route::post('', [MessageController::class, 'store'])
                                 ->name('store');
 
-                            Route::delete('/{id}', [MessageController::class, 'destroy'])
-                                ->name('destroy');
+                            // Route::delete('/{id}', [MessageController::class, 'destroy'])
+                            //     ->name('destroy');
                         });
 
                     Route::post('/join', [ChatGroupController::class, 'join'])
