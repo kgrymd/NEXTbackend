@@ -17,7 +17,7 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'comment_text' => $this->comment_text,
-            'user' => UserResource::make($this->user),
+            'user' => PublicUserResource::make($this->user),
             'ts' => $this->created_at->getTimestampMs(),
         ];
     }
