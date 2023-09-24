@@ -20,14 +20,7 @@ class MyResourceController extends Controller
 {
     public function me(Request $request)
     {
-
-        // ↓で認証済みのリクエストしている人のUserインスタンスが取得できる
         $me = Auth::user();
-        // 別に以下のように書いてもOK（が以下の書き方を簡単に書く方法が↑）
-        // $myId = Auth::id();
-        // $me = User::find($myId);
-        // とりあえず、そのままレスポンス（後で整形）
-        // return response()->json($me);
 
         // tagsリレーションを事前にロード
         $me->load('tags');
@@ -35,7 +28,6 @@ class MyResourceController extends Controller
     }
 
 
-    // public function updateData(Request $request)
     public function updateData(UpdateUserDataRequest $request)
     {
         DB::beginTransaction(); // トランザクションを開始
@@ -45,16 +37,11 @@ class MyResourceController extends Controller
 
             // 画像がアップロードされているか確認
             if ($request->hasFile('iconFile')) {
-                // $savedPath = $request->iconFile->store('users/images', 's3'); // 画像保存とs3に保存
-                $savedPath = $request->iconFile->store('users/images'); // FILESYSTEM_DISK=s3と記述しているので第二引数いらない↑
+                $savedPath = $request->iconFile->store('users/images'); // FILESYSTEM_DISK=s3と記述しているので第二引数いらない
 
                 // 以前のアイコン画像を削除
                 $previous_icon_path = Auth::user()->icon_path;
                 if ($previous_icon_path) {
-                    // if (Storage::disk('s3')->exists($previous_icon_path)) {
-                    //     Storage::disk('s3')->delete($previous_icon_path);
-                    // }
-                    // FILESYSTEM_DISK=s3と記述しているのでdiskの引数いらない↑
                     if (Storage::disk()->exists($previous_icon_path)) {
                         Storage::disk()->delete($previous_icon_path);
                     }
@@ -117,7 +104,6 @@ class MyResourceController extends Controller
 
                 return [
                     'id' => $participation->id,
-                    // 'user_id' => $participation->user_id,
                     'recruitment_id' => $participation->recruitment_id,
                     'creator_id' => $participation->recruitment->user_id,
                     'recruitment_title' => $participation->recruitment->title,
@@ -138,7 +124,6 @@ class MyResourceController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // return response()->json($chat_groups);
         return ChatGroupResource::collection($chat_groups);
     }
 
@@ -147,22 +132,16 @@ class MyResourceController extends Controller
         // 認証済みのユーザーを取得
         $user = Auth::user();
 
-        // ユーザーが参加している募集を取得
-        // $likedRecruitments = $user->favoritedRecruitments()->with('recruitment:title,id,user_id')->orderBy('created_at', 'desc')->get();
-        // $likedRecruitments = $user->favoritedRecruitments()->orderBy('created_at', 'desc')->get();
-
         // ユーザーがいいねした募集を取得（いいねした日時でソート）
         $likedRecruitments = $user->favoritedRecruitments()
             ->orderBy('recruitment_user.created_at', 'desc')
             ->get();
 
-        // return response()->json($likedRecruitments);
         $result = $likedRecruitments->map(
             function ($recruitment) {
 
                 return [
                     'id' => $recruitment->id,
-                    // 'recruitment_id' => $recruitment->id,
                     'creator_id' => $recruitment->user_id,
                     'title' => $recruitment->title,
                     'liked_at' => $recruitment->pivot->created_at,  // いいねした日時
