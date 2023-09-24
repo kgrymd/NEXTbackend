@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('chat_groups', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->string('name', 30);
+            $table->string('name', 30)->nullable();
+            $table->foreignId('recruitment_id')->nullable()->constrained(); // 追加2023/09/19
             $table->timestamps();
 
             $table->index('uuid');
