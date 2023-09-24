@@ -11,13 +11,14 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'recruitment_id' => 'required|exists:recruitments,id',
             'comment_text' => 'required|max:1000',
         ]);
 
         $comment = Comment::create([
-            'user_id' => $request->user_id,
+            // 'user_id' => $request->user_id,
+            'user_id' => $request->user()->id,
             'recruitment_id' => $request->recruitment_id,
             'comment_text' => $request->comment_text,
         ]);
