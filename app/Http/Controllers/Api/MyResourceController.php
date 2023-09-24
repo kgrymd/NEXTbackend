@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\UpdateUserDataRequest;
+use App\Http\Resources\ChatGroupResource;
 use App\Http\Resources\UserResource;
 use App\Models\ChatGroup;
 use App\Models\Tag;
@@ -33,7 +35,8 @@ class MyResourceController extends Controller
     }
 
 
-    public function updateData(Request $request)
+    // public function updateData(Request $request)
+    public function updateData(UpdateUserDataRequest $request)
     {
         DB::beginTransaction(); // トランザクションを開始
 
@@ -132,9 +135,61 @@ class MyResourceController extends Controller
             ->whereHas('users', function (Builder $query) {
                 $query->where('user_id', Auth::id());
             })
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        return response()->json($chat_groups);
+        // return response()->json($chat_groups);
+        return ChatGroupResource::collection($chat_groups);
+    }
+
+    public function likedRecruitments(Request $request)
+    {
+        // 認証済みのユーザーを取得
+        $user = Auth::user();
+
+        // ユーザーが参加している募集を取得
+        // $likedRecruitments = $user->favoritedRecruitments()->with('recruitment:title,id,user_id')->orderBy('created_at', 'desc')->get();
+        // $likedRecruitments = $user->favoritedRecruitments()->orderBy('created_at', 'desc')->get();
+
+        // ユーザーがいいねした募集を取得（いいねした日時でソート）
+        $likedRecruitments = $user->favoritedRecruitments()
+            ->orderBy('recruitment_user.created_at', 'desc')
+            ->get();
+
+        // return response()->json($likedRecruitments);
+        $result = $likedRecruitments->map(
+            function ($recruitment) {
+
+                return [
+                    'id' => $recruitment->id,
+                    // 'recruitment_id' => $recruitment->id,
+                    'creator_id' => $recruitment->user_id,
+                    'title' => $recruitment->title,
+                    'liked_at' => $recruitment->pivot->created_at,  // いいねした日時
+
+                ];
+            }
+        );
+        return response()->json($result);
+    }
+
+    public function createdRecruitments(Request $request)
+    {
+        // 認証済みのユーザーを取得
+        $user = Auth::user();
+
+        // ユーザーが作成した募集を取得
+        $createdRecruitments = $user->createdRecruitments()->orderBy('created_at', 'desc')->get();
+
+        $result = $createdRecruitments->map(function ($recruitment) {
+            return [
+                'id' => $recruitment->id,
+                'title' => $recruitment->title,
+                'description' => $recruitment->description,
+                'created_at' => $recruitment->created_at,
+            ];
+        });
+
+        return response()->json($result);
     }
 }
