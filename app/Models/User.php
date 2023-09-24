@@ -100,4 +100,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class);
     }
+
+    public function favoritedRecruitments()
+    {
+        return $this->belongsToMany(Recruitment::class, 'recruitment_user')
+            ->withTimestamps(); // タイムスタンプを同期する場合
+    }
 }
