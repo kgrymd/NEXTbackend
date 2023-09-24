@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ChatGroupResource;
 use App\Models\ChatGroup;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,12 +19,29 @@ class ChatGroupController extends Controller
             ->orderBy('created_at', 'asc')
             ->paginate(20);
 
-        return response()->json($chat_groups);
+        // return response()->json($chat_groups);
+        return ChatGroupResource::collection($chat_groups);
+    }
+
+    public function show($uuid)
+    {
+        $chatGroup = ChatGroup::where('uuid', $uuid)->first();
+
+        if (!$chatGroup) {
+            return response()->json(['message' => 'Chat group not found'], 404);
+        }
+
+        return response()->json($chatGroup);
     }
 
 
     public function store(Request $request)
     {
+
+        $request->validate([
+            'name' => 'required|string|max:50',
+        ]);
+
         $name = $request->name; // $request->input('name') でもOK ここを募集のタイトルにするが、後々の追加機能を考慮し逆にフロント側で募集のタイトルをnameとして送る
 
         // Eloquentを使ってDBに保存
@@ -35,7 +53,7 @@ class ChatGroupController extends Controller
         // 現在の時間を取得
         $now = Carbon::now();
 
-        // チャンネルを作った人はそのままチャンネルに参加している状態を作りたい
+        // ChatGroupを作った人はそのままChatGroupに参加している状態を作りたい
         // つまり、chat_group_userテーブルの中間テーブルに紐付けデータを作成
         // $storedChatGroup->users()->sync([Auth::id()]);
         $storedChatGroup->users()->sync([
@@ -45,11 +63,17 @@ class ChatGroupController extends Controller
             ]
         ]);
 
-        return response()->json($storedChatGroup);
+        // return response()->json($storedChatGroup);
+        return new ChatGroupResource($storedChatGroup);
     }
 
     public function join(Request $request, string $uuid)
     {
+
+        $request->validate([
+            'uuid' => 'required|uuid',
+        ]);
+
         $chat_group = ChatGroup::where('uuid', $uuid)->first();
         if (!$chat_group) {
             abort(404, 'Not Found.');
@@ -67,6 +91,11 @@ class ChatGroupController extends Controller
 
     public function leave(Request $request, string $uuid)
     {
+
+        $request->validate([
+            'uuid' => 'required|uuid',
+        ]);
+
         $chat_group = ChatGroup::where('uuid', $uuid)->first();
         if (!$chat_group) {
             abort(404, 'Not Found.');
