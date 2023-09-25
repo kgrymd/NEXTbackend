@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\MessageIndexRequest;
 use App\Http\Requests\Api\MessagePollingRequest;
+use App\Http\Requests\Api\MessageStoreRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\ChatGroup;
 use App\Models\Message;
@@ -53,7 +54,7 @@ class MessageController extends Controller
         return MessageResource::collection($messages);
     }
 
-    public function store(Request $request, string $uuid)
+    public function store(MessageStoreRequest $request, string $uuid)
     {
 
         $request->validate([
