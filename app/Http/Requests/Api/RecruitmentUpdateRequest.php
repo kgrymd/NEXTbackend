@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Models\Recruitment;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RecruitmentUpdateRequest extends FormRequest
@@ -11,7 +12,8 @@ class RecruitmentUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $recruitment = Recruitment::find($this->route('id'));
+        return $recruitment && $this->user()->can('update', $recruitment);
     }
 
     /**
