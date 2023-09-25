@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\RecruitmentCreationRequest;
 use App\Http\Resources\RecruitmentResource;
 use App\Models\ChatGroup;
 use App\Models\Participant;
@@ -49,7 +50,7 @@ class RecruitmentController extends Controller
         return new RecruitmentResource($recruitment);
     }
 
-    public function creation(Request $request)
+    public function creation(RecruitmentCreationRequest $request)
     {
         DB::beginTransaction();
         try {
