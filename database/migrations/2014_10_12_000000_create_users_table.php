@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('icon_url')->nullable();
+            $table->string('icon_path')->nullable();
             $table->text('introduction')->nullable();
             $table->integer('age')->nullable();
-            $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->boolean('uncharted_challenge')->default(false);
             $table->foreignId('prefecture_id')->nullable()->constrained();
             $table->rememberToken();
             $table->timestamps();

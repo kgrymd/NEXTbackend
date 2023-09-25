@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     // タイムスタンプを使わない場合↓の設定が必要らしい。
-    public $timestamps = false;
+    // public $timestamps = false;
 
     use HasFactory;
 
@@ -17,4 +17,15 @@ class Tag extends Model
 
     // Eloquentを通して更新や登録が可能なフィールド（ホワイトリストを定義）
     protected $fillable = ['name'];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+    public function recruitments()
+    {
+        // return $this->belongsToMany(Recruitment::class, 'recruitment_tag');
+        return $this->belongsToMany(Recruitment::class);
+    }
 }

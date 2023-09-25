@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('chat_groups', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->uuid('uuid')->unique();
+            $table->string('name', 30)->nullable();
+            $table->foreignId('recruitment_id')->nullable()->constrained(); // 追加2023/09/19
             $table->timestamps();
+
+            $table->index('uuid');
         });
     }
 
@@ -23,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('chat_groups');
     }
 };
