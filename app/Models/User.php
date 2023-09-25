@@ -24,7 +24,7 @@ class User extends Authenticatable
         'icon_path',
         'introduction',
         'age',
-        'gender',
+        'uncharted_challenge',
         'prefecture_id',
 
     ];
