@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\MessageIndexRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\ChatGroup;
 use App\Models\Message;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
 {
-    public function index(Request $request, string $uuid)
+    public function index(MessageIndexRequest $request, string $uuid)
     {
         /** @var \Illuminate\Pagination\CursorPaginator $messages */
         $messages = Message::with(['user', 'chat_group']) //chat_groupを追加　09192037
