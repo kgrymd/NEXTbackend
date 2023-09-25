@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\RecruitmentCreationRequest;
+use App\Http\Requests\Api\RecruitmentUpdateRequest;
 use App\Http\Resources\RecruitmentResource;
 use App\Models\ChatGroup;
 use App\Models\Participant;
@@ -189,7 +190,7 @@ class RecruitmentController extends Controller
 
 
 
-    public function update(Request $request, $id)
+    public function update(RecruitmentUpdateRequest $request, $id)
     {
         // return response()->json($request->all());
         Log::info('Received Request Data:', $request->all());
