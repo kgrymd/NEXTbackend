@@ -69,6 +69,9 @@ Route::middleware(['auth:sanctum'])
 
                 Route::get('/createdRecruitments', [MyResourceController::class, 'createdRecruitments'])
                     ->name('createdRecruitments');
+
+                Route::post('/unchartedChallenge', [MyResourceController::class, 'unchartedChallenge'])
+                    ->name('unchartedChallenge');
             });
 
         Route::prefix('tags')
