@@ -171,4 +171,17 @@ class MyResourceController extends Controller
 
         return response()->json($result);
     }
+
+    public function unchartedChallenge(Request $request)
+    {
+        // 認証済みのユーザーを取得
+        $user = Auth::user();
+
+        // 認証済みのユーザーのuncharted_challengeを1に設定
+        $user->uncharted_challenge = 1;
+        $user->save();
+
+        // 必要に応じてレスポンスを返す
+        return response()->json(['success' => true]);
+    }
 }
