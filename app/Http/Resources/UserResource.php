@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'prefecture_name' => optional($this->prefecture)->name, // 都道府県名を追加
             'introduction' => $this->introduction,
             'icon_path' => $this->icon_path,
+            'uncharted_challenge' => $this->uncharted_challenge,
             'tags' => TagResource::collection($this->whenLoaded('tags')),
 
         ];
