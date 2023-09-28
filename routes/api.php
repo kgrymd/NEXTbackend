@@ -72,6 +72,11 @@ Route::middleware(['auth:sanctum'])
 
                 Route::post('/unchartedChallenge', [MyResourceController::class, 'unchartedChallenge'])
                     ->name('unchartedChallenge');
+
+                Route::get('/unchartedChallenges', [MyResourceController::class, 'unchartedChallenges'])
+                    ->name('unchartedChallenges');
+                Route::get('/currentUnchartedChallenge', [MyResourceController::class, 'currentUnchartedChallenge'])
+                    ->name('currentUnchartedChallenge');
             });
 
         Route::prefix('tags')
