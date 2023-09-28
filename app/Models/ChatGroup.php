@@ -11,7 +11,7 @@ class ChatGroup extends Model
     protected $table = 'chat_groups';
 
     // Eloquentを通して更新や登録が可能なフィールド（ホワイトリストを定義）
-    protected $fillable = ['uuid', 'name', 'recruitment_id'];
+    protected $fillable = ['uuid', 'name', 'recruitment_id', 'year', 'month'];
 
 
     public function messages()
