@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Models\ChatGroup;
 use App\Models\Tag;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -170,5 +171,49 @@ class MyResourceController extends Controller
         });
 
         return response()->json($result);
+    }
+
+    public function unchartedChallenge(Request $request)
+    {
+        // 認証済みのユーザーを取得
+        $user = Auth::user();
+
+        // 認証済みのユーザーのuncharted_challengeの値を切り替える
+        $user->uncharted_challenge = $user->uncharted_challenge == 1 ? 0 : 1;
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function unchartedChallenges()
+    {
+        // 現在認証されているユーザーを取得
+        $user = Auth::user();
+
+        // ユーザーが属しているchat_groupsの中で、yearとmonthがnullでないものを取得
+        $groups = $user->chat_groups()->whereNotNull(['year', 'month'])->get();
+
+        // 取得したグループを返す
+        return response()->json($groups);
+    }
+
+    public function currentUnchartedChallenge()
+    {
+        // 現在認証されているユーザーを取得
+        $user = Auth::user();
+
+        // 現在の年と月を取得
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
+
+        // ユーザーが属しているchat_groupsの中で、yearとmonthがnullでなく、
+        // yearが現在の年でmonthが現在の月のものを取得
+        $groups = $user->chat_groups()->whereNotNull(['year', 'month'])
+            ->where('year', $currentYear)
+            ->where('month', $currentMonth)
+            ->get();
+
+        // 取得したグループを返す
+        return response()->json($groups);
     }
 }

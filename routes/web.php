@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UnchartedChallengeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,5 +22,9 @@ Route::get('/users/image/{userId}', [UserController::class, 'showIcon'])
     ->name('web.users.image');
 Route::get('/attachments/{attachmentId}', [AttachmentController::class, 'download'])
     ->name('web.attachments');
+
+//↓テスト用
+Route::get('/uncharted', [UnchartedChallengeController::class, 'store'])
+    ->name('web.uncharted');
 
 require __DIR__ . '/auth.php';

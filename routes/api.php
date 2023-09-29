@@ -34,6 +34,8 @@ Route::prefix('prefectures')
 
 Route::get('users/{id}', [UserController::class, 'show'])->name('show');
 
+Route::get('recruitments/{id}', [RecruitmentController::class, 'show'])->name('show');
+
 
 // ミドルウェアで認証をかけてログインしてないとアクセスできないAPIを定義できる
 Route::middleware(['auth:sanctum'])
@@ -69,6 +71,15 @@ Route::middleware(['auth:sanctum'])
 
                 Route::get('/createdRecruitments', [MyResourceController::class, 'createdRecruitments'])
                     ->name('createdRecruitments');
+
+                Route::post('/unchartedChallenge', [MyResourceController::class, 'unchartedChallenge'])
+                    ->name('unchartedChallenge');
+
+                Route::get('/unchartedChallenges', [MyResourceController::class, 'unchartedChallenges'])
+                    ->name('unchartedChallenges');
+
+                Route::get('/currentUnchartedChallenge', [MyResourceController::class, 'currentUnchartedChallenge'])
+                    ->name('currentUnchartedChallenge');
             });
 
         Route::prefix('tags')
@@ -95,7 +106,7 @@ Route::middleware(['auth:sanctum'])
                     Route::post('', [RecruitmentController::class, 'creation']);
                     Route::post('/{recruitmentId}/tags', [RecruitmentTagController::class, 'update']);
 
-                    Route::get('/{id}', [RecruitmentController::class, 'show'])->name('show');
+                    // Route::get('/{id}', [RecruitmentController::class, 'show'])->name('show');
                     Route::post('/{id}', [RecruitmentController::class, 'update'])->name('update');
 
                     // Route::get('/suggestions', [RecruitmentController::class, 'suggestions'])->name('suggestions');
