@@ -191,7 +191,7 @@ class MyResourceController extends Controller
         $user = Auth::user();
 
         // ユーザーが属しているchat_groupsの中で、yearとmonthがnullでないものを取得
-        $groups = $user->chat_groups()->whereNotNull(['year', 'month'])->get();
+        $groups = $user->chat_groups()->whereNotNull(['year', 'month'])->orderBy('created_at', 'desc')->get();
 
         // 取得したグループを返す
         return response()->json($groups);
@@ -211,7 +211,7 @@ class MyResourceController extends Controller
         $groups = $user->chat_groups()->whereNotNull(['year', 'month'])
             ->where('year', $currentYear)
             ->where('month', $currentMonth)
-            ->get();
+            ->first();
 
         // 取得したグループを返す
         return response()->json($groups);

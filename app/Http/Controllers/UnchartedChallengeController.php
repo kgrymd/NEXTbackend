@@ -39,7 +39,7 @@ class UnchartedChallengeController extends Controller
             // chat_groupを作成
             $chatGroup = ChatGroup::create([
                 'uuid' => \Str::uuid(),
-                'name' => $year . "年" . $month . "月",
+                'name' => $year . "年" . $month . "月" . "のチャレンジ",
                 'year' => $year,
                 'month' => $month
             ]);
