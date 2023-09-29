@@ -211,7 +211,7 @@ class MyResourceController extends Controller
         $groups = $user->chat_groups()->whereNotNull(['year', 'month'])
             ->where('year', $currentYear)
             ->where('month', $currentMonth)
-            ->get();
+            ->first();
 
         // 取得したグループを返す
         return response()->json($groups);
