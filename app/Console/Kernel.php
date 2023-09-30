@@ -12,7 +12,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
         $schedule->call('App\Http\Controllers\UnchartedChallengeController@store')
             ->monthlyOn(1, '0:0');
 
