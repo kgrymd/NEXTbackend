@@ -208,7 +208,11 @@ class MyResourceController extends Controller
 
         // ユーザーが属しているchat_groupsの中で、yearとmonthがnullでなく、
         // yearが現在の年でmonthが現在の月のものを取得
-        $groups = $user->chat_groups()->whereNotNull(['year', 'month'])
+        // ここでwith('users')を使用して、各チャットグループに関連するユーザー情報もロード
+        $groups = $user->chat_groups()->with(['users' => function ($query) {
+            $query->select('users.id', 'users.icon_path');
+        }])
+            ->whereNotNull(['year', 'month'])
             ->where('year', $currentYear)
             ->where('month', $currentMonth)
             ->first();
